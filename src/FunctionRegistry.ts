@@ -3,6 +3,14 @@ import { PromptFunctions, PromptFunction, PromptMemory, Tokenizer } from "./type
 export class FunctionRegistry implements PromptFunctions {
     private readonly _functions: Map<string, PromptFunction> = new Map<string, PromptFunction>();
 
+    public constructor(functions?: Record<string, PromptFunction>) {
+        if (functions) {
+            for (const key in functions) {
+                this._functions.set(key, functions[key]);
+            }
+        }
+    }
+
     public has(name: string): boolean {
         return this._functions.has(name);
     }

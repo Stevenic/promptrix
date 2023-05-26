@@ -3,6 +3,14 @@ import { PromptMemory } from "./types";
 export class VolatileMemory implements PromptMemory {
     private readonly _memory: Map<string, any> = new Map<string, any>();
 
+    public constructor(memory?: Record<string, any>) {
+        if (memory) {
+            for (const key in memory) {
+                this._memory.set(key, memory[key]);
+            }
+        }
+    }
+
     public has(key: string): boolean {
         return this._memory.has(key);
     }
