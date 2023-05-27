@@ -6,12 +6,12 @@ export class TemplateSection extends PromptSectionBase {
     private _parts: PartRenderer[] = [];
 
     public readonly template: string;
-    public readonly type: string;
+    public readonly role: string;
 
-    public constructor(template: string, type: string, tokens: number = 1.0, required: boolean = true, separator: string = '/n') {
+    public constructor(template: string, role: string, tokens: number = 1.0, required: boolean = true, separator: string = '/n') {
         super(tokens, required, separator);
         this.template = template;
-        this.type = type;
+        this.role = role;
         this.parseTemplate();
     }
 
@@ -23,7 +23,7 @@ export class TemplateSection extends PromptSectionBase {
         const text = renderedParts.join('');
         const length = tokenizer.encode(text).length;
 
-        return { output: [{ type: this.type, content: text }], length: length, tooLong: length > maxTokens };
+        return { output: [{ role: this.role, content: text }], length: length, tooLong: length > maxTokens };
     }
 
     private parseTemplate(): void {

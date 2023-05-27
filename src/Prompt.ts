@@ -58,7 +58,7 @@ export class Prompt implements PromptSection {
         for (let i = 0; i < layout.length; i++) {
             const section = layout[i];
             if (section.layout) {
-                output.push({ type: 'text', content: section.layout.output });
+                output.push({ role: 'text', content: section.layout.output });
             }
         }
 

@@ -50,9 +50,9 @@ export interface RenderedPromptSection<T> {
 
 export interface Message {
     /**
-     * Type of message. Typically 'system', 'user', or 'assistant'.
+     * The messages role. Typically 'system', 'user', or 'assistant'.
      */
-    type: string;
+    role: string;
 
     /**
      * Text of the message.

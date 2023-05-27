@@ -23,7 +23,7 @@ export class ConversationHistory extends PromptSectionBase {
       const lines: string[] = [];
       for (let i = history.length - 1; i >= 0; i--) {
           const message = history[i];
-          const prefix = message.type === 'user' ? this.userPrefix : this.assistantPrefix;
+          const prefix = message.role === 'user' ? this.userPrefix : this.assistantPrefix;
           const line = prefix + message.content;
           const length = tokenizer.encode(line).length + (lines.length > 1 ? separatorLength : 0);
 
