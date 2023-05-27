@@ -6,7 +6,7 @@ export abstract class PromptSectionBase implements PromptSection {
     public readonly separator: string;
     public readonly textPrefix: string;
 
-    public constructor(tokens: number = 1.0, required: boolean = true, separator: string = '/n', textPrefix: string = '') {
+    public constructor(tokens: number = 1.0, required: boolean = true, separator: string = '\n', textPrefix: string = '') {
         this.required = required;
         this.tokens = tokens;
         this.separator = separator;

@@ -61,7 +61,7 @@ const memory = new VolatileMemory({
     { type: 'user', 'hello' },
     { type: 'assistant', 'Hello how are you?' }
   ],
-  input: "I'm doing ok" 
+  input: "I'm doing ok"
 });
 
 ```
@@ -92,13 +92,13 @@ class PineconeMemory extends PromptSectionBase {
     super(tokens);
     this.settings = settings;
   }
-  
+
   async renderAsMessages(memory, functions, tokenizer, maxTokens) {
     const input = memory.get('input');
-    
+
     // ... fetch up to maxTokens worth of snippets from pinecone.
-    
-    return { output: `memory:/n` + snippets, length: snippetsLength, tooLong: fale };
+
+    return { output: `memory:\n` + snippets, length: snippetsLength, tooLong: fale };
   }
 }
 
@@ -110,4 +110,4 @@ const prompt = new Prompt([
 ]);
 ```
 
-We defined a new custom section that retrieves memories from pinecone and then we did an 80/20 split of the remaining token budget betwoen our PineconeMemory section and our ConversationHistory section. That means that if the other two fixed sections consume a combined 20 tokens, PineconeMemory will get a budget of 1584 tokens and ConversationHistory will get a budget of 396 tokens. 
+We defined a new custom section that retrieves memories from pinecone and then we did an 80/20 split of the remaining token budget betwoen our PineconeMemory section and our ConversationHistory section. That means that if the other two fixed sections consume a combined 20 tokens, PineconeMemory will get a budget of 1584 tokens and ConversationHistory will get a budget of 396 tokens.

@@ -7,7 +7,7 @@ export class TextSection extends PromptSectionBase {
     public readonly text: string;
     public readonly role: string;
 
-    public constructor(text: string, role: string, tokens: number = 1.0, required: boolean = true, separator: string = '/n') {
+    public constructor(text: string, role: string, tokens: number = 1.0, required: boolean = true, separator: string = '\n') {
         super(tokens, required, separator);
         this.text = text;
         this.role = role;

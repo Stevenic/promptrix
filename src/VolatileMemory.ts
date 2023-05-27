@@ -16,11 +16,14 @@ export class VolatileMemory implements PromptMemory {
     }
 
     public get(key: string): any {
-        return this._memory.get(key);
+        const value = this._memory.get(key);
+        return JSON.parse(JSON.stringify(value));
+
     }
 
     public set(key: string, value: any): void {
-        this._memory.set(key, value);
+        const clone = JSON.parse(JSON.stringify(value));
+        this._memory.set(key, clone);
     }
 
     public delete(key: string): void {

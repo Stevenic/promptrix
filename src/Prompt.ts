@@ -6,7 +6,7 @@ export class Prompt implements PromptSection {
     public readonly tokens: number;
     public readonly separator: string;
 
-    public constructor(sections: PromptSection[], required: boolean = true, tokens: number = 1.0, separator: string = '/n/n') {
+    public constructor(sections: PromptSection[], required: boolean = true, tokens: number = 1.0, separator: string = '\n\n') {
         this.sections = sections;
         this.required = required;
         this.tokens = tokens;
@@ -36,12 +36,13 @@ export class Prompt implements PromptSection {
             }
         }
 
-        return { output: output.join(this.separator), length: this.getLayoutLength(layout), tooLong: remaining < 0 };
+        const text = output.join(this.separator);
+        return { output: text, length: tokenizer.encode(text).length, tooLong: remaining < 0 };
     }
 
     public async renderAsMessages(memory: PromptMemory, functions: PromptFunctions, tokenizer: Tokenizer, maxTokens: number): Promise<RenderedPromptSection<Message[]>> {
         // Start a new layout
-        const layout: PromptSectionLayout<string>[] = this.sections.map((section) => {
+        const layout: PromptSectionLayout<Message[]>[] = this.sections.map((section) => {
             return { section: section };
         });
 
@@ -49,8 +50,8 @@ export class Prompt implements PromptSection {
         const remaining = await this.layoutSections(
             layout,
             maxTokens,
-            (section) => section.renderAsText(memory, functions, tokenizer, maxTokens),
-            (section, remaining) => section.renderAsText(memory, functions, tokenizer, remaining)
+            (section) => section.renderAsMessages(memory, functions, tokenizer, maxTokens),
+            (section, remaining) => section.renderAsMessages(memory, functions, tokenizer, remaining)
         );
 
         // Build output
@@ -58,7 +59,7 @@ export class Prompt implements PromptSection {
         for (let i = 0; i < layout.length; i++) {
             const section = layout[i];
             if (section.layout) {
-                output.push({ role: 'text', content: section.layout.output });
+                output.push(...section.layout.output);
             }
         }
 

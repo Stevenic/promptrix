@@ -6,7 +6,7 @@ export class ConversationHistory extends PromptSectionBase {
     public readonly userPrefix: string;
     public readonly assistantPrefix: string;
 
-    public constructor(variable: string, tokens: number, required: boolean = false, userPrefix: string = 'user: ', assistantPrefix: string = 'assistant: ', separator: string = '/n') {
+    public constructor(variable: string, tokens: number, required: boolean = false, userPrefix: string = 'user: ', assistantPrefix: string = 'assistant: ', separator: string = '\n') {
         super(tokens, required, separator);
         this.variable = variable;
         this.userPrefix = userPrefix;
