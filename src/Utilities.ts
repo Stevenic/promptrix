@@ -3,7 +3,9 @@ import { stringify } from "yaml";
 
 export class Utilities {
     public static toString(tokenizer: Tokenizer, value: any): string {
-        if (typeof value === "object") {
+        if (value === undefined || value === null) {
+            return '';
+        } else if (typeof value === "object") {
             if (typeof value.toISOString == "function") {
                 return value.toISOString();
             } else {
@@ -16,8 +18,6 @@ export class Utilities {
                     return asJSON;
                 }
             }
-        } else if (value === undefined || value === null) {
-            return '';
         } else {
             return value.toString();
         }

@@ -34,5 +34,15 @@ describe("Utilities", () => {
             const result = Utilities.toString(tokenizer, new Date("2021-01-01"));
             assert.equal(result, "2021-01-01T00:00:00.000Z");
         });
+
+        it("should return an empty string for undefined", () => {
+            const result = Utilities.toString(tokenizer, undefined);
+            assert.equal(result, "");
+        });
+
+        it("should return an empty string for null", () => {
+            const result = Utilities.toString(tokenizer, null);
+            assert.equal(result, "");
+        });
     });
 });
