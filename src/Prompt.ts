@@ -24,7 +24,9 @@ export class Prompt implements PromptSection {
             layout,
             maxTokens,
             (section) => section.renderAsText(memory, functions, tokenizer, maxTokens),
-            (section, remaining) => section.renderAsText(memory, functions, tokenizer, remaining)
+            (section, remaining) => section.renderAsText(memory, functions, tokenizer, remaining),
+            true,
+            tokenizer
         );
 
         // Build output
@@ -66,14 +68,21 @@ export class Prompt implements PromptSection {
         return { output: output, length: this.getLayoutLength(layout), tooLong: remaining < 0 };
     }
 
-    private async layoutSections<T>(layout: PromptSectionLayout<T>[], maxTokens: number, cbFixed: (section: PromptSection) => Promise<RenderedPromptSection<T>>, cbProportional: (section: PromptSection, remaining: number) => Promise<RenderedPromptSection<T>>): Promise<number> {
+    private async layoutSections<T>(
+        layout: PromptSectionLayout<T>[],
+        maxTokens: number,
+        cbFixed: (section: PromptSection) => Promise<RenderedPromptSection<T>>,
+        cbProportional: (section: PromptSection, remaining: number) => Promise<RenderedPromptSection<T>>,
+        textLayout: boolean = false,
+        tokenizer?: Tokenizer
+    ): Promise<number> {
         // Layout fixed sections
         await this.layoutFixedSections(layout, cbFixed);
 
         // Get tokens remaining and drop optional sections if too long
-        let remaining = maxTokens - this.getLayoutLength(layout);
+        let remaining = maxTokens - this.getLayoutLength(layout, textLayout, tokenizer);
         while (remaining < 0 && this.dropLastOptionalSection(layout)) {
-            remaining = maxTokens - this.getLayoutLength(layout);
+            remaining = maxTokens - this.getLayoutLength(layout, textLayout, tokenizer);
         }
 
         // Layout proportional sections
@@ -82,9 +91,9 @@ export class Prompt implements PromptSection {
             await this.layoutProportionalSections(layout, (section) => cbProportional(section, remaining));
 
             // Get tokens remaining and drop optional sections if too long
-            remaining = maxTokens - this.getLayoutLength(layout);
+            remaining = maxTokens - this.getLayoutLength(layout, textLayout, tokenizer);
             while (remaining < 0 && this.dropLastOptionalSection(layout)) {
-                remaining = maxTokens - this.getLayoutLength(layout);
+                remaining = maxTokens - this.getLayoutLength(layout, textLayout, tokenizer);
             }
         }
 
@@ -115,16 +124,27 @@ export class Prompt implements PromptSection {
         await Promise.all(promises);
     }
 
-    private getLayoutLength<T>(layout: PromptSectionLayout<T>[]): number {
-        let length = 0;
-        for (let i = 0; i < layout.length; i++) {
-            const section = layout[i];
-            if (section.layout) {
-                length += section.layout.length;
+    private getLayoutLength<T>(layout: PromptSectionLayout<T>[], textLayout: boolean = false, tokenizer?: Tokenizer): number {
+        if (textLayout && tokenizer) {
+            const output: string[] = [];
+            for (let i = 0; i < layout.length; i++) {
+                const section = layout[i];
+                if (section.layout) {
+                    output.push(section.layout.output as string);
+                }
             }
-        }
+            return tokenizer.encode(output.join(this.separator)).length;
+        } else {
+            let length = 0;
+            for (let i = 0; i < layout.length; i++) {
+                const section = layout[i];
+                if (section.layout) {
+                    length += section.layout.length;
+                }
+            }
 
-        return length;
+            return length;
+        }
     }
 
     private dropLastOptionalSection<T>(layout: PromptSectionLayout<T>[]): boolean {

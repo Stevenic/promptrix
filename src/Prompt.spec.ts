@@ -87,4 +87,42 @@ describe("Prompt", () => {
             assert.equal(rendered.tooLong, false);
         });
     });
+
+    describe("proportional rendering", () => {
+        it("should render both fixed and proportional sections", async () => {
+            const prompt = new Prompt([
+                new TextSection("Hello", "user", 10, true),
+                new TextSection("There Big", "user", 1.0, false),
+                new TextSection("World", "user", 10, true)
+            ]);
+            const rendered = await prompt.renderAsText(memory, functions, tokenizer, 100);
+            assert.equal(rendered.output, "Hello\n\nThere Big\n\nWorld");
+            assert.equal(rendered.length, 8);
+            assert.equal(rendered.tooLong, false);
+        });
+
+        it("should drop optional sections as needed", async () => {
+            const prompt = new Prompt([
+                new TextSection("Hello", "user", 0.25, true),
+                new TextSection("There Big", "user", 0.50, false),
+                new TextSection("World", "user", 0.25, true)
+            ]);
+            const rendered = await prompt.renderAsText(memory, functions, tokenizer, 4);
+            assert.equal(rendered.output, "Hello\n\nWorld");
+            assert.equal(rendered.length, 4);
+            assert.equal(rendered.tooLong, false);
+        });
+
+        it("should keep required sections even if too long", async () => {
+            const prompt = new Prompt([
+                new TextSection("Hello", "user", 0.25, true),
+                new TextSection("There Big", "user", 0.50, false),
+                new TextSection("World", "user", 0.25, true)
+            ]);
+            const rendered = await prompt.renderAsText(memory, functions, tokenizer, 2);
+            assert.equal(rendered.output, "Hello\n\nWorld");
+            assert.equal(rendered.length, 4);
+            assert.equal(rendered.tooLong, true);
+        });
+    });
 });
