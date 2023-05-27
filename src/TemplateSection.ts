@@ -34,7 +34,6 @@ export class TemplateSection extends PromptSectionBase {
         for (let i = 0; i < this.template.length; i++) {
             const char = this.template[i];
             switch (state) {
-                default:
                 case ParseState.inText:
                     if (char === '{' && this.template[i + 1] === '{') {
                         if (part.length > 0) {
@@ -123,7 +122,6 @@ export class TemplateSection extends PromptSectionBase {
         for (let i = 0; i < param.length; i++) {
             const char = param[i];
             switch (state) {
-                default:
                 case ParseState.inText:
                     if (["'", '"', '`'].includes(char)) {
                         savePart();
@@ -144,11 +142,6 @@ export class TemplateSection extends PromptSectionBase {
                     }
                     break;
             }
-        }
-
-        // Ensure we ended in the correct state
-        if (state !== ParseState.inText) {
-            throw new Error(`Invalid function parameter: ${param}`);
         }
 
         // Add final part

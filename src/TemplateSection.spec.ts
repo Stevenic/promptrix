@@ -120,6 +120,14 @@ describe("TemplateSection", () => {
             assert.equal(rendered.tooLong, false);
         });
 
+        it("should skip {{}} empty template params", async () => {
+            const section = new TemplateSection("{{}}", "user");
+            const rendered = await section.renderAsText(memory, functions, tokenizer, 100);
+            assert.equal(rendered.output, "");
+            assert.equal(rendered.length, 0);
+            assert.equal(rendered.tooLong, false);
+        });
+
         it("should throw an error for an invalid template", () => {
             try {
                 const section = new TemplateSection("Hello {{test3 'Big' World}", "user");
