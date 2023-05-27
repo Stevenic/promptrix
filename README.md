@@ -5,6 +5,19 @@ All prompt sections are potentially asynchronous and rendered in parallel. Fixed
 
 Promptrix also supports generating prompts for both Text Completion and Chat Completion style API's. It will automatically convert from one style prompt to the other while maintaining accurate token counting.
 
+## Installation
+To install Promptrix using NPM:
+
+```Bash
+npm install promptrix
+```
+
+Or to install using Yarn:
+
+```Bash
+yarn add promptrix
+```
+
 ## Basic Usage
 It's best to think of Promptrix prompts as a stack of Chat Completion messages as Promptix will automatically convert from messages to text when rendering for a Text Completion style API. So with that in mind a super simple Promptrix prompt would look like:
 
