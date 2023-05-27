@@ -131,12 +131,16 @@ export class TemplateSection extends PromptSectionBase {
                         state = ParseState.inString;
                     } else if (char == ' ') {
                         savePart();
+                    } else {
+                        part += char;
                     }
                     break;
                 case ParseState.inString:
                     if (char === stringDelim) {
                         savePart();
                         state = ParseState.inText;
+                    } else {
+                        part += char;
                     }
                     break;
             }
