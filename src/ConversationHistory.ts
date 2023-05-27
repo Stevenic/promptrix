@@ -25,7 +25,7 @@ export class ConversationHistory extends PromptSectionBase {
           const message = history[i];
           const prefix = message.role === 'user' ? this.userPrefix : this.assistantPrefix;
           const line = prefix + message.content;
-          const length = tokenizer.encode(line).length + (lines.length > 1 ? separatorLength : 0);
+          const length = tokenizer.encode(line).length + (lines.length > 0 ? separatorLength : 0);
 
           // Add initial line if required
           if (lines.length === 0 && this.required) {
