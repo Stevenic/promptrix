@@ -89,7 +89,23 @@ describe("Prompt", () => {
     });
 
     describe("proportional rendering", () => {
-        it("should render both fixed and proportional sections", async () => {
+        it("should render both fixed and proportional sections as messages", async () => {
+            const prompt = new Prompt([
+                new TextSection("Hello", "user", 10, true),
+                new TextSection("There Big", "user", 1.0, false),
+                new TextSection("World", "user", 10, true)
+            ]);
+            const rendered = await prompt.renderAsMessages(memory, functions, tokenizer, 100);
+            assert.deepEqual(rendered.output, [
+                { role: "user", content: "Hello" },
+                { role: "user", content: "There Big" },
+                { role: "user", content: "World" }
+            ]);
+            assert.equal(rendered.length, 4);
+            assert.equal(rendered.tooLong, false);
+        });
+
+        it("should render both fixed and proportional sections as text", async () => {
             const prompt = new Prompt([
                 new TextSection("Hello", "user", 10, true),
                 new TextSection("There Big", "user", 1.0, false),
@@ -101,11 +117,25 @@ describe("Prompt", () => {
             assert.equal(rendered.tooLong, false);
         });
 
+        it("should render only fixed sections", async () => {
+            const prompt = new Prompt([
+                new TextSection("Hello", "user", 10, true),
+                new TextSection("World", "user", 10, true)
+            ]);
+            const rendered = await prompt.renderAsMessages(memory, functions, tokenizer, 2);
+            assert.deepEqual(rendered.output, [
+                { role: "user", content: "Hello" },
+                { role: "user", content: "World" }
+            ]);
+            assert.equal(rendered.length, 2);
+            assert.equal(rendered.tooLong, false);
+        });
+
         it("should drop optional sections as needed", async () => {
             const prompt = new Prompt([
-                new TextSection("Hello", "user", 0.25, true),
-                new TextSection("There Big", "user", 0.50, false),
-                new TextSection("World", "user", 0.25, true)
+                new TextSection("Hello", "user", 10, true),
+                new TextSection("There Big", "user", 0.5, false),
+                new TextSection("World", "user", 0.5, true)
             ]);
             const rendered = await prompt.renderAsText(memory, functions, tokenizer, 4);
             assert.equal(rendered.output, "Hello\n\nWorld");
@@ -113,15 +143,55 @@ describe("Prompt", () => {
             assert.equal(rendered.tooLong, false);
         });
 
+        it("should drop multiple optional sections as needed", async () => {
+            const prompt = new Prompt([
+                new TextSection("Hello", "user", 10, true),
+                new TextSection("There", "user", 10, false),
+                new TextSection("Big", "user", 10, false),
+                new TextSection("World", "user", 10, true)
+            ]);
+            const rendered = await prompt.renderAsMessages(memory, functions, tokenizer, 2);
+            assert.deepEqual(rendered.output, [
+                { role: "user", content: "Hello" },
+                { role: "user", content: "World" }
+            ]);
+            assert.equal(rendered.length, 2);
+            assert.equal(rendered.tooLong, false);
+        });
+
         it("should keep required sections even if too long", async () => {
             const prompt = new Prompt([
-                new TextSection("Hello", "user", 0.25, true),
-                new TextSection("There Big", "user", 0.50, false),
-                new TextSection("World", "user", 0.25, true)
+                new TextSection("Hello", "user", 10, true),
+                new TextSection("There Big", "user", 0.5, false),
+                new TextSection("World", "user", 0.5, true)
             ]);
             const rendered = await prompt.renderAsText(memory, functions, tokenizer, 2);
             assert.equal(rendered.output, "Hello\n\nWorld");
             assert.equal(rendered.length, 4);
+            assert.equal(rendered.tooLong, true);
+        });
+
+        it("should skip rendering proportional sections if fixed sections too big", async () => {
+            const prompt = new Prompt([
+                new TextSection("Hello There", "user", 10, true),
+                new TextSection("Big", "user", 0.5, true),
+                new TextSection("World", "user", 0.5, true)
+            ]);
+            const rendered = await prompt.renderAsText(memory, functions, tokenizer, 1);
+            assert.equal(rendered.output, "Hello There");
+            assert.equal(rendered.length, 2);
+            assert.equal(rendered.tooLong, true);
+        });
+
+        it("should skip rendering proportional sections if fixed sections too big for messages", async () => {
+            const prompt = new Prompt([
+                new TextSection("Hello There", "user", 10, true),
+                new TextSection("Big", "user", 0.5, true),
+                new TextSection("World", "user", 0.5, true)
+            ]);
+            const rendered = await prompt.renderAsMessages(memory, functions, tokenizer, 1);
+            assert.deepEqual(rendered.output, [{ role: "user", content: "Hello There" }]);
+            assert.equal(rendered.length, 2);
             assert.equal(rendered.tooLong, true);
         });
     });
