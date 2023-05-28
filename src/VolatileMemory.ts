@@ -17,13 +17,20 @@ export class VolatileMemory implements PromptMemory {
 
     public get(key: string): any {
         const value = this._memory.get(key);
-        return JSON.parse(JSON.stringify(value));
-
+        if (value !== null && typeof value === "object") {
+            return JSON.parse(JSON.stringify(value));
+        } else {
+            return value;
+        }
     }
 
     public set(key: string, value: any): void {
-        const clone = JSON.parse(JSON.stringify(value));
-        this._memory.set(key, clone);
+        if (value !== null && typeof value === "object") {
+            const clone = JSON.parse(JSON.stringify(value));
+            this._memory.set(key, clone);
+        } else {
+            this._memory.set(key, value);
+        }
     }
 
     public delete(key: string): void {
