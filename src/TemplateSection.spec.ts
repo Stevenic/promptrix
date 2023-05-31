@@ -20,7 +20,7 @@ describe("TemplateSection", () => {
             const section = new TemplateSection("Hello World", "user");
             assert.equal(section.template, "Hello World");
             assert.equal(section.role, "user");
-            assert.equal(section.tokens, 1.0);
+            assert.equal(section.tokens, -1);
             assert.equal(section.required, true);
             assert.equal(section.separator, "\n");
         });

@@ -20,7 +20,7 @@ describe("PromptSectionBase", () => {
     describe("constructor", () => {
         it("should create a TestSection", () => {
             const section = new TestSection();
-            assert.equal(section.tokens, 1.0);
+            assert.equal(section.tokens, -1);
             assert.equal(section.required, true);
             assert.equal(section.separator, "\n");
             assert.equal(section.textPrefix, "");

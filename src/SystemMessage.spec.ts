@@ -14,7 +14,7 @@ describe("SystemMessage", () => {
             const section = new SystemMessage("Hello World");
             assert.equal(section.template, "Hello World");
             assert.equal(section.role, "system");
-            assert.equal(section.tokens, 1.0);
+            assert.equal(section.tokens, -1);
             assert.equal(section.required, true);
             assert.equal(section.separator, "\n");
         });

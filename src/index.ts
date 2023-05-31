@@ -2,6 +2,7 @@ export * from "./AssistantMessage";
 export * from "./ConversationHistory";
 export * from "./FunctionRegistry";
 export * from "./GPT3Tokenizer";
+export * from "./LayoutEngine";
 export * from "./Prompt";
 export * from "./PromptSectionBase";
 export * from "./SystemMessage";

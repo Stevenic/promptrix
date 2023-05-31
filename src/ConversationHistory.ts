@@ -19,6 +19,7 @@ export class ConversationHistory extends PromptSectionBase {
 
       // Populate history and stay under the token budget
       let tokens = 0;
+      const budget = this.tokens > 1.0 ? Math.min(this.tokens, maxTokens) : maxTokens;
       const separatorLength = tokenizer.encode(this.separator).length;
       const lines: string[] = [];
       for (let i = history.length - 1; i >= 0; i--) {
@@ -34,7 +35,7 @@ export class ConversationHistory extends PromptSectionBase {
           }
 
           // Stop if we're over the token budget
-          if (tokens + length > maxTokens) {
+          if (tokens + length > budget) {
               break;
           }
 
@@ -52,6 +53,7 @@ export class ConversationHistory extends PromptSectionBase {
 
         // Populate messages and stay under the token budget
         let tokens = 0;
+        const budget = this.tokens > 1.0 ? Math.min(this.tokens, maxTokens) : maxTokens;
         const messages: Message[] = [];
         for (let i = history.length - 1; i >= 0; i--) {
             const message = history[i];
@@ -64,7 +66,7 @@ export class ConversationHistory extends PromptSectionBase {
             }
 
             // Stop if we're over the token budget
-            if (tokens + length > maxTokens) {
+            if (tokens + length > budget) {
                 break;
             }
 

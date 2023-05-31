@@ -14,7 +14,7 @@ describe("UserMessage", () => {
             const section = new UserMessage("Hello World");
             assert.equal(section.template, "Hello World");
             assert.equal(section.role, "user");
-            assert.equal(section.tokens, 1.0);
+            assert.equal(section.tokens, -1);
             assert.equal(section.required, true);
             assert.equal(section.separator, "\n");
             assert.equal(section.textPrefix, "user: ");

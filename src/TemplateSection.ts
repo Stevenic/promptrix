@@ -8,7 +8,7 @@ export class TemplateSection extends PromptSectionBase {
     public readonly template: string;
     public readonly role: string;
 
-    public constructor(template: string, role: string, tokens: number = 1.0, required: boolean = true, separator: string = '\n', textPrefix?: string) {
+    public constructor(template: string, role: string, tokens: number = -1, required: boolean = true, separator: string = '\n', textPrefix?: string) {
         super(tokens, required, separator, textPrefix);
         this.template = template;
         this.role = role;
@@ -23,7 +23,8 @@ export class TemplateSection extends PromptSectionBase {
         const text = renderedParts.join('');
         const length = tokenizer.encode(text).length;
 
-        return { output: [{ role: this.role, content: text }], length: length, tooLong: length > maxTokens };
+        // Return output
+        return this.returnMessages([{ role: this.role, content: text }], length, tokenizer, maxTokens);
     }
 
     private parseTemplate(): void {
