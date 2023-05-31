@@ -1,11 +1,21 @@
 import { Message, PromptFunctions, PromptMemory, PromptSection, RenderedPromptSection, Tokenizer } from "./types";
 
+/**
+ * Abstract Base class for most prompt sections.
+ */
 export abstract class PromptSectionBase implements PromptSection {
     public readonly required: boolean;
     public readonly tokens: number;
     public readonly separator: string;
     public readonly textPrefix: string;
 
+    /**
+     * Creates a new 'PromptSectionBase' instance.
+     * @param tokens Optional. Sizing strategy for this section. Defaults to `auto`.
+     * @param required Optional. Indicates if this section is required. Defaults to `true`.
+     * @param separator Optional. Separator to use between sections when rendering as text. Defaults to `\n`.
+     * @param textPrefix Optional. Prefix to use for text output. Defaults to `undefined`.
+     */
     public constructor(tokens: number = -1, required: boolean = true, separator: string = '\n', textPrefix: string = '') {
         this.required = required;
         this.tokens = tokens;

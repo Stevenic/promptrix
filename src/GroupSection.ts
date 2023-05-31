@@ -2,12 +2,24 @@ import { Message, PromptFunctions, PromptMemory, PromptSection, RenderedPromptSe
 import { PromptSectionBase } from "./PromptSectionBase";
 import { LayoutEngine } from "./LayoutEngine";
 
+/**
+ * A group of sections that will rendered as a single message.
+ */
 export class GroupSection extends PromptSectionBase {
     private readonly _layoutEngine: LayoutEngine;
 
     public readonly sections: PromptSection[];
     public readonly role: string;
 
+    /**
+     *
+     * @param sections List of sections to group together.
+     * @param role Optional. Message role to use for this section. Defaults to `system`.
+     * @param tokens Optional. Sizing strategy for this section. Defaults to `auto`.
+     * @param required Optional. Indicates if this section is required. Defaults to `true`.
+     * @param separator Optional. Separator to use between sections when rendering as text. Defaults to `\n\n`.
+     * @param textPrefix Optional. Prefix to use for text output. Defaults to `undefined`.
+     */
     public constructor(sections: PromptSection[], role: string = 'system', tokens: number = -1, required: boolean = true, separator: string = '\n\n', textPrefix?: string) {
         super(tokens, required, separator, textPrefix);
         this._layoutEngine = new LayoutEngine(sections, tokens, required, separator);

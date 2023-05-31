@@ -1,12 +1,17 @@
 import { Message, PromptFunctions, PromptMemory, PromptSection, RenderedPromptSection, Tokenizer } from "./types";
 
+/**
+ * Base layout engine that renders a set of `auto`, `fixed`, or `proportional` length sections.
+ * @remarks
+ * This class is used internally by the `Prompt` and `GroupSection` classes to render their sections.
+ */
 export class LayoutEngine implements PromptSection {
     public readonly sections: PromptSection[];
     public readonly required: boolean;
     public readonly tokens: number;
     public readonly separator: string;
 
-    public constructor(sections: PromptSection[], tokens: number = -1, required: boolean = true, separator: string = '\n\n') {
+    public constructor(sections: PromptSection[], tokens: number, required: boolean, separator: string) {
         this.sections = sections;
         this.required = required;
         this.tokens = tokens;

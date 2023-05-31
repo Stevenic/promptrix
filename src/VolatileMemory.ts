@@ -1,8 +1,15 @@
 import { PromptMemory } from "./types";
 
+/**
+ * An in-memory store that lives for the length of the process.
+ */
 export class VolatileMemory implements PromptMemory {
     private readonly _memory: Map<string, any> = new Map<string, any>();
 
+    /**
+     * Creates a new 'VolatileMemory' instance.
+     * @param memory Optional. Variables to initialize this instance with.
+     */
     public constructor(memory?: Record<string, any>) {
         if (memory) {
             for (const key in memory) {

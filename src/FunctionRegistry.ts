@@ -1,8 +1,15 @@
 import { PromptFunctions, PromptFunction, PromptMemory, Tokenizer } from "./types";
 
+/**
+ * Registry of functions that can be invoked from a prompt template.
+ */
 export class FunctionRegistry implements PromptFunctions {
     private readonly _functions: Map<string, PromptFunction> = new Map<string, PromptFunction>();
 
+    /**
+     * Creates a new 'FunctionRegistry' instance.
+     * @param functions Optional. Functions to add to this registry.
+     */
     public constructor(functions?: Record<string, PromptFunction>) {
         if (functions) {
             for (const key in functions) {

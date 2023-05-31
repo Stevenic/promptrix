@@ -2,12 +2,23 @@ import { Message, PromptFunctions, PromptMemory, RenderedPromptSection, Tokenize
 import { PromptSectionBase } from "./PromptSectionBase";
 import { Utilities } from "./Utilities";
 
+/**
+ * A section that renders the conversation history.
+ */
 export class ConversationHistory extends PromptSectionBase {
     public readonly variable: string;
     public readonly userPrefix: string;
     public readonly assistantPrefix: string;
 
-    public constructor(variable: string, tokens: number, required: boolean = false, userPrefix: string = 'user: ', assistantPrefix: string = 'assistant: ', separator: string = '\n') {
+    /**
+     * Creates a new 'ConversationHistory' instance.
+     * @param variable Name of memory variable used to store the histories `Message[]`.
+     * @param tokens Optional. Sizing strategy for this section. Defaults to `proportional` with a value of `1.0`.
+     * @param required Optional. Indicates if this section is required. Defaults to `false`.
+     * @param userPrefix Optional. Prefix to use for user messages when rendering as text. Defaults to `user: `.
+     * @param assistantPrefix Optional. Prefix to use for assistant messages when rendering as text. Defaults to `assistant: `.
+     */
+    public constructor(variable: string, tokens: number = 1.0, required: boolean = false, userPrefix: string = 'user: ', assistantPrefix: string = 'assistant: ', separator: string = '\n') {
         super(tokens, required, separator);
         this.variable = variable;
         this.userPrefix = userPrefix;
