@@ -48,7 +48,7 @@ export interface RenderedPromptSection<T> {
     tooLong: boolean;
 }
 
-export interface Message {
+export interface Message<TContent = string> {
     /**
      * The messages role. Typically 'system', 'user', or 'assistant'.
      */
@@ -57,7 +57,7 @@ export interface Message {
     /**
      * Text of the message.
      */
-    content: string;
+    content: TContent;
 }
 
 export interface PromptMemory {

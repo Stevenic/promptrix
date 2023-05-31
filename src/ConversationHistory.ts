@@ -1,5 +1,6 @@
 import { Message, PromptFunctions, PromptMemory, RenderedPromptSection, Tokenizer } from "./types";
 import { PromptSectionBase } from "./PromptSectionBase";
+import { Utilities } from "./Utilities";
 
 export class ConversationHistory extends PromptSectionBase {
     public readonly variable: string;
@@ -23,7 +24,8 @@ export class ConversationHistory extends PromptSectionBase {
       const separatorLength = tokenizer.encode(this.separator).length;
       const lines: string[] = [];
       for (let i = history.length - 1; i >= 0; i--) {
-          const message = history[i];
+          const msg = history[i];
+            const message: Message = { role: msg.role, content: Utilities.toString(tokenizer, msg.content) };
           const prefix = message.role === 'user' ? this.userPrefix : this.assistantPrefix;
           const line = prefix + message.content;
           const length = tokenizer.encode(line).length + (lines.length > 0 ? separatorLength : 0);
@@ -56,7 +58,8 @@ export class ConversationHistory extends PromptSectionBase {
         const budget = this.tokens > 1.0 ? Math.min(this.tokens, maxTokens) : maxTokens;
         const messages: Message[] = [];
         for (let i = history.length - 1; i >= 0; i--) {
-            const message = history[i];
+            const msg = history[i];
+            const message: Message = { role: msg.role, content: Utilities.toString(tokenizer, msg.content) };
             const length = tokenizer.encode(message.content).length;
 
             // Add initial message if required
