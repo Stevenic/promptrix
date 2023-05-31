@@ -24,7 +24,7 @@ export class FunctionRegistry implements PromptFunctions {
         return fn;
     }
 
-    public add(name: string, value: PromptFunction): void {
+    public addFunction(name: string, value: PromptFunction): void {
         if (this._functions.has(name)) {
             throw new Error(`Function '${name}' already exists.`);
         }

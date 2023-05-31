@@ -20,10 +20,10 @@ describe("FunctionRegistry", () => {
         });
     });
 
-    describe("add", () => {
+    describe("addFunction", () => {
         it("should add a function", () => {
             const registry = new FunctionRegistry();
-            registry.add("test", async (memory, functions, tokenizer, args) => { });
+            registry.addFunction("test", async (memory, functions, tokenizer, args) => { });
             assert.equal(registry.has("test"), true);
         });
 
@@ -31,7 +31,7 @@ describe("FunctionRegistry", () => {
             const registry = new FunctionRegistry({
                 "test": async (memory, functions, tokenizer, args) => { }
             });
-            assert.throws(() => registry.add("test", async (memory, functions, tokenizer, args) => { }));
+            assert.throws(() => registry.addFunction("test", async (memory, functions, tokenizer, args) => { }));
         });
     });
 
