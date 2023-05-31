@@ -6,7 +6,7 @@ export class LayoutEngine implements PromptSection {
     public readonly tokens: number;
     public readonly separator: string;
 
-    public constructor(sections: PromptSection[], required: boolean = true, tokens: number = -1, separator: string = '\n\n') {
+    public constructor(sections: PromptSection[], tokens: number = -1, required: boolean = true, separator: string = '\n\n') {
         this.sections = sections;
         this.required = required;
         this.tokens = tokens;

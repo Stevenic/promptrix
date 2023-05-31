@@ -20,6 +20,16 @@ describe("Prompt", () => {
             assert.equal(prompt.required, true);
             assert.equal(prompt.separator, "\n\n");
         });
+
+        it("should create a Prompt with a custom params", () => {
+            const prompt = new Prompt([
+                new TextSection("Hello World", "user")
+            ], 100, false, " ");
+            assert.equal(prompt.sections.length, 1);
+            assert.equal(prompt.tokens, 100);
+            assert.equal(prompt.required, false);
+            assert.equal(prompt.separator, " ");
+        });
     });
 
     describe("renderAsMessages", () => {
