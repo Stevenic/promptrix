@@ -53,6 +53,19 @@ describe("Prompt", () => {
             assert.equal(rendered.length, 2);
             assert.equal(rendered.tooLong, false);
         });
+
+        it("should render a hierarchy of prompts to an array of messages", async () => {
+            const prompt = new Prompt([
+                new Prompt([
+                    new TextSection("Hello", "user")
+                ]),
+                new TextSection("World", "user")
+            ]);
+            const rendered = await prompt.renderAsMessages(memory, functions, tokenizer, 100);
+            assert.deepEqual(rendered.output, [{ role: "user", content: "Hello" }, { role: "user", content: "World" }]);
+            assert.equal(rendered.length, 2);
+            assert.equal(rendered.tooLong, false);
+        });
     });
 
     describe("renderAsText", () => {
@@ -79,6 +92,19 @@ describe("Prompt", () => {
         it("should render multiple TextSections to a string", async () => {
             const prompt = new Prompt([
                 new TextSection("Hello", "user"),
+                new TextSection("World", "user")
+            ]);
+            const rendered = await prompt.renderAsText(memory, functions, tokenizer, 100);
+            assert.equal(rendered.output, "Hello\n\nWorld");
+            assert.equal(rendered.length, 4);
+            assert.equal(rendered.tooLong, false);
+        });
+
+        it("should render a hierarchy of prompts to a string", async () => {
+            const prompt = new Prompt([
+                new Prompt([
+                    new TextSection("Hello", "user")
+                ]),
                 new TextSection("World", "user")
             ]);
             const rendered = await prompt.renderAsText(memory, functions, tokenizer, 100);
