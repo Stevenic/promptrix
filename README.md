@@ -82,19 +82,38 @@ const memory = new VolatileMemory({
 The `ConversationHistory` section needs to be told the name of the memory variable to use and is an optional section by default so it will be automatically dropped should the prompt start getting to big.
 
 ## Proportional Sizing
-All sections can be given a token budget. This can either be a fixed number of tokens to try and stay under or a proportional size from 0.0 - 1.0. This works very similar to column sizing in UI. the default sizing for all sections is `1.0` so they're all basically set to stretch and just like in UI layout, you typically only want a single stretch column so we can update our prompt definition to look like this:
+All sections 3 different sizing strategies; `auto`, `proportional`, or `fixed`. Strategy selection is done by passing in a numerical value for the sections `tokens` parameter and breaks down as follows:
+
+- **-1**: This indicates an `auto` length section and is the default for most sections. The section will be rendered as normal but will be flagged as being `tooLong` if the rendered length is greater then the remaining token budget.
+- **0.0 - 1.0**: This indicates a `proportional` length section and is the percentage of remaining tokens to use. Proportional sections are rendered after `fixed` & `auto` length sections and the render budget they're passed in is a percentage of the remaining tokens.
+- **> 1.0**: Any value greater then 1 is considered a `fixed` length sections. Fixed length sections render similarly to `auto` length sections but any tokens over the specified token length will be truncated.
+
+It's easiest to think of this as being similar to column sizing in UI layouts. You can have as many proportional sections as you want but the total distribution of those sections should add up to 1.0. Fixed length sections make it less likely that you'll run out of tokens and are useful for capping things like the users message. We can update our to explicitly set the sizing strategy for each section:
 
 ```JS
 const prompt = new Prompt([
-  new SystemMessage(`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.`, 500),
+  new SystemMessage(`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.`, -1),
   new ConversationHistory('history', 1.0),
   new UserMessage(`{{$input}}`, 100)
 ]);
 ```
 
-This basically says the SystemMessage is budgeted up to 500 tokens, the UserMessage is allowed up to 100 tokens, and any remaining tokens can be used by ConversationHistory. The fixed token caps are just that, they're caps. In this example the SystemMessage is 23 tokens and lets say the Usermessage is 7 tokens. That's only 7 tokens consumed at render time so with an overall maxTokens of 2000, the ConversationHistory will be allowed to use up to 1970 tokens.
+This basically says that the `SystemMessage` should be rendered as an `auto` length section, the `UserMessage` should be rendered as a `fixed` length section that's capped at 100 tokens, and any remaining tokens can be used by `ConversationHistory` section. In this example the SystemMessage is 23 tokens and lets say the users message is 7 tokens. That's a total of 30 tokens consumed during the initial phase of rendering. So with an overall `maxTokens` of 2000, the `ConversationHistory` will be allowed to use up to 1970 tokens.
 
-And just because an individual section goes over its cap doesn't mean the prompt will be considered too long. The prompt will try to start dropping optional sections and as long as all required sections are rendered and the combined token lengths are under maxTokens, then the prompt won't be marked as being tooLong.
+## Optional Sections
+Most sections are required by default but they can be marked as optional by settings the prompts `required` parameter to `false`. Optional sections will start being dropped should the prompt begin running out of available input tokens. The `ConversationHistory` sections is optional by default so lets imagine a prompt that does a 50/50 split between the `ConversationHistory` and `UserMessage` sections:
+
+```JS
+const prompt = new Prompt([
+  new SystemMessage(`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.`),
+  new ConversationHistory('history', 0.5),
+  new UserMessage(`{{$input}}`, 0.5)
+]);
+```
+
+The `ConversationHistory` section has built in token budgeting so it will never use more the 50% of the remaining tokens. The `UserMessage` section has no such budgeting logic to it will happily go over the 50% budget. If the combined token usage is less then the remaining tokens then fine, but if it's over, the prompt will still try to make things work by dropping optional section. Since the `ConversationHistory` is optional by default (you can mark it as required) this section will get dropped. If the prompt is still over budget and there are no more optional sections to drop, it will be flagged as `tooLong`.
+
+Optional sections are dropped in reverse order so the last optional section is always dropped first. Keep that in mind when ordering your prompts and place more important, but optional, sections towards the top of the prompt.
 
 ## Custom Sections
 So what if we wanted to call a function to inject some semantic memory into a prompt:
@@ -116,7 +135,7 @@ class PineconeMemory extends PromptSectionBase {
 }
 
 const prompt = new Prompt([
-  new PineconeMemory(<pinecone settings>, 0.8),
+  new PineconeMemory({pinecone settings}, 0.8),
   new ConversationHistory('history', 0.2),
   new SystemMessage(`Answer the users question only if you can find it in the memory above.`, 100),
   new UserMessage(`{{$input}}`, 100)
