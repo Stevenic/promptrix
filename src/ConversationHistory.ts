@@ -45,6 +45,7 @@ export class ConversationHistory extends PromptSectionBase {
           if (lines.length === 0 && this.required) {
               tokens += length;
               lines.unshift(line);
+              continue;
           }
 
           // Stop if we're over the token budget
