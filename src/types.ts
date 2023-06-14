@@ -50,14 +50,29 @@ export interface RenderedPromptSection<T> {
 
 export interface Message<TContent = string> {
     /**
-     * The messages role. Typically 'system', 'user', or 'assistant'.
+     * The messages role. Typically 'system', 'user', 'assistant', 'function'.
      */
     role: string;
 
     /**
      * Text of the message.
      */
-    content: TContent;
+    content: TContent|null;
+
+    /**
+     * Optional. A named function to call.
+     */
+    function_call?: FunctionCall;
+
+    /**
+     * Optional. Name of the function that was called.
+     */
+    name?: string;
+}
+
+export interface FunctionCall {
+    name: string;
+    arguments?: Record<string, any>;
 }
 
 export interface PromptMemory {

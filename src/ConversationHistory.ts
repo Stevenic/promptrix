@@ -70,9 +70,15 @@ export class ConversationHistory extends PromptSectionBase {
         const budget = this.tokens > 1.0 ? Math.min(this.tokens, maxTokens) : maxTokens;
         const messages: Message[] = [];
         for (let i = history.length - 1; i >= 0; i--) {
+            // Clone message
             const msg = history[i];
-            const message: Message = { role: msg.role, content: Utilities.toString(tokenizer, msg.content) };
-            const length = tokenizer.encode(message.content).length;
+            const message: Message = Object.assign({}, msg);
+            if (msg.content !== null) {
+                message.content = Utilities.toString(tokenizer, msg.content);
+            }
+
+            // Get message length
+            const length = tokenizer.encode(PromptSectionBase.getMessageText(message)).length;
 
             // Add initial message if required
             if (messages.length === 0 && this.required) {

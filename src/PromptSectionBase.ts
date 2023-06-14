@@ -28,7 +28,7 @@ export abstract class PromptSectionBase implements PromptSection {
         const asMessages = await this.renderAsMessages(memory, functions, tokenizer, maxTokens);
 
         // Convert to text
-        let text = asMessages.output.map((message) => message.content).join(this.separator);
+        let text = asMessages.output.map((message) => PromptSectionBase.getMessageText(message)).join(this.separator);
 
         // Calculate length
         const prefixLength = tokenizer.encode(this.textPrefix).length;
@@ -53,7 +53,7 @@ export abstract class PromptSectionBase implements PromptSection {
         if (this.tokens > 1.0) {
             while (length > this.tokens) {
                 const msg = output.pop();
-                const encoded = tokenizer.encode(msg!.content);
+                const encoded = tokenizer.encode(PromptSectionBase.getMessageText(msg!));
                 length -= encoded.length;
                 if (length < this.tokens) {
                     const delta = this.tokens - length;
@@ -66,4 +66,16 @@ export abstract class PromptSectionBase implements PromptSection {
 
         return { output: output, length: length, tooLong: length > maxTokens };
     }
+
+    public static getMessageText(message: Message): string {
+        let text = message.content ?? '';
+        if (message.function_call) {
+            text = JSON.stringify(message.function_call);
+        } else if (message.name) {
+            text = `${message.name} returned ${text}`;
+        }
+
+        return text;
+    }
+
 }
