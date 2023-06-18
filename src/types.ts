@@ -71,8 +71,8 @@ export interface Message<TContent = string> {
 }
 
 export interface FunctionCall {
-    name: string;
-    arguments?: Record<string, any>;
+    name?: string;
+    arguments?: string;
 }
 
 export interface PromptMemory {
