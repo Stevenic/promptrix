@@ -11,10 +11,10 @@ export class LayoutEngine implements PromptSection {
     public readonly size: number;
     public readonly separator: string;
 
-    public constructor(sections: PromptSection[], tokens: number, required: boolean, separator: string) {
+    public constructor(sections: PromptSection[], size: number, required: boolean, separator: string) {
         this.sections = sections;
         this.required = required;
-        this.size = tokens;
+        this.size = size;
         this.separator = separator;
     }
 
