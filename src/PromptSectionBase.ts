@@ -5,20 +5,20 @@ import { Message, PromptFunctions, PromptMemory, PromptSection, RenderedPromptSe
  */
 export abstract class PromptSectionBase implements PromptSection {
     public readonly required: boolean;
-    public readonly tokens: number;
+    public readonly size: number;
     public readonly separator: string;
     public readonly textPrefix: string;
 
     /**
      * Creates a new 'PromptSectionBase' instance.
-     * @param tokens Optional. Sizing strategy for this section. Defaults to `auto`.
+     * @param size Optional. Sizing strategy for this section. Defaults to `auto`.
      * @param required Optional. Indicates if this section is required. Defaults to `true`.
      * @param separator Optional. Separator to use between sections when rendering as text. Defaults to `\n`.
      * @param textPrefix Optional. Prefix to use for text output. Defaults to `undefined`.
      */
-    public constructor(tokens: number = -1, required: boolean = true, separator: string = '\n', textPrefix: string = '') {
+    public constructor(size: number = -1, required: boolean = true, separator: string = '\n', textPrefix: string = '') {
         this.required = required;
-        this.tokens = tokens;
+        this.size = size;
         this.separator = separator;
         this.textPrefix = textPrefix;
     }
@@ -37,10 +37,10 @@ export abstract class PromptSectionBase implements PromptSection {
 
         // Truncate if fixed length
         text = this.textPrefix + text;
-        if (this.tokens > 1.0 && length > this.tokens) {
+        if (this.size > 1.0 && length > this.size) {
             const encoded = tokenizer.encode(text);
-            text = tokenizer.decode(encoded.slice(0, this.tokens));
-            length = this.tokens;
+            text = tokenizer.decode(encoded.slice(0, this.size));
+            length = this.size;
         }
 
         return { output: text, length: length, tooLong: length > maxTokens };
@@ -50,13 +50,13 @@ export abstract class PromptSectionBase implements PromptSection {
 
     protected returnMessages(output: Message[], length: number, tokenizer: Tokenizer, maxTokens: number): RenderedPromptSection<Message[]> {
         // Truncate if fixed length
-        if (this.tokens > 1.0) {
-            while (length > this.tokens) {
+        if (this.size > 1.0) {
+            while (length > this.size) {
                 const msg = output.pop();
                 const encoded = tokenizer.encode(PromptSectionBase.getMessageText(msg!));
                 length -= encoded.length;
-                if (length < this.tokens) {
-                    const delta = this.tokens - length;
+                if (length < this.size) {
+                    const delta = this.size - length;
                     const truncated = tokenizer.decode(encoded.slice(0, delta));
                     output.push({ role: msg!.role, content: truncated });
                     length += delta;

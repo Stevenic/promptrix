@@ -8,13 +8,13 @@ import { Message, PromptFunctions, PromptMemory, PromptSection, RenderedPromptSe
 export class LayoutEngine implements PromptSection {
     public readonly sections: PromptSection[];
     public readonly required: boolean;
-    public readonly tokens: number;
+    public readonly size: number;
     public readonly separator: string;
 
     public constructor(sections: PromptSection[], tokens: number, required: boolean, separator: string) {
         this.sections = sections;
         this.required = required;
-        this.tokens = tokens;
+        this.size = tokens;
         this.separator = separator;
     }
 
@@ -120,7 +120,7 @@ export class LayoutEngine implements PromptSection {
         const promises: Promise<RenderedPromptSection<T>>[] = [];
         for (let i = 0; i < layout.length; i++) {
             const section = layout[i];
-            if (section.section.tokens < 0 || section.section.tokens > 1.0) {
+            if (section.section.size < 0 || section.section.size > 1.0) {
                 promises.push(callback(section.section).then((output) => section.layout = output));
             }
         }
@@ -132,7 +132,7 @@ export class LayoutEngine implements PromptSection {
         const promises: Promise<RenderedPromptSection<T>>[] = [];
         for (let i = 0; i < layout.length; i++) {
             const section = layout[i];
-            if (section.section.tokens >= 0.0 && section.section.tokens <= 1.0) {
+            if (section.section.size >= 0.0 && section.section.size <= 1.0) {
                 promises.push(callback(section.section).then((output) => section.layout = output));
             }
         }
