@@ -16,7 +16,7 @@ describe("GroupSection", () => {
                 new TextSection("Hello World", "user")
             ]);
             assert.equal(section.sections.length, 1);
-            assert.equal(section.tokens, -1);
+            assert.equal(section.size, -1);
             assert.equal(section.required, true);
             assert.equal(section.separator, "\n\n");
         });
@@ -27,7 +27,7 @@ describe("GroupSection", () => {
             ], 'user', 100, false, " ");
             assert.equal(section.sections.length, 1);
             assert.equal(section.role, 'user');
-            assert.equal(section.tokens, 100);
+            assert.equal(section.size, 100);
             assert.equal(section.required, false);
             assert.equal(section.separator, " ");
         });

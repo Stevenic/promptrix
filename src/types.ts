@@ -10,7 +10,7 @@ export interface PromptSection {
      * - Values between 0.0 and 1.0 represent a percentage of the total budget and the section will be layed out proportionally to all other sections.
      * - Values greater than 1.0 represent the max number of tokens the section should be allowed to consume.
      */
-    readonly tokens: number;
+    readonly size: number;
 
     /**
      * Renders the section as a string of text.

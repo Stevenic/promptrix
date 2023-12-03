@@ -14,7 +14,7 @@ describe("AssistantMessage", () => {
             const section = new AssistantMessage("Hello World");
             assert.equal(section.template, "Hello World");
             assert.equal(section.role, "assistant");
-            assert.equal(section.tokens, -1);
+            assert.equal(section.size, -1);
             assert.equal(section.required, true);
             assert.equal(section.separator, "\n");
             assert.equal(section.textPrefix, "assistant: ");
