@@ -26,6 +26,9 @@ export abstract class PromptSectionBase implements PromptSection {
     public async renderAsText(memory: PromptMemory, functions: PromptFunctions, tokenizer: Tokenizer, maxTokens: number): Promise<RenderedPromptSection<string>> {
         // Render as messages
         const asMessages = await this.renderAsMessages(memory, functions, tokenizer, maxTokens);
+        if (asMessages.output.length === 0) {
+            return { output: '', length: 0, tooLong: false };
+        }
 
         // Convert to text
         let text = asMessages.output.map((message) => PromptSectionBase.getMessageText(message)).join(this.separator);

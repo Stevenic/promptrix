@@ -47,7 +47,8 @@ export class TemplateSection extends PromptSectionBase {
         const length = tokenizer.encode(text).length;
 
         // Return output
-        return this.returnMessages([{ role: this.role, content: text }], length, tokenizer, maxTokens);
+        const messages: Message<string>[] = length > 0 ? [{ role: this.role, content: text }] : [];
+        return this.returnMessages(messages, length, tokenizer, maxTokens);
     }
 
     private parseTemplate(): void {

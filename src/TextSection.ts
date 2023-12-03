@@ -32,6 +32,7 @@ export class TextSection extends PromptSectionBase {
         }
 
         // Return output
-        return this.returnMessages([{ role: this.role, content: this.text }], this._length, tokenizer, maxTokens);
+        const messages: Message<string>[] = this._length > 0 ? [{ role: this.role, content: this.text }] : [];
+        return this.returnMessages(messages, this._length, tokenizer, maxTokens);
     }
 }
