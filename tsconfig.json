@@ -9,7 +9,7 @@
         "strict": true,
         "target": "es6",
         "esModuleInterop": true,
-        "lib": ["es2015"],
+        "lib": ["es2016"],
         "outDir": "./lib",
         "rootDir": "./src",
         "skipLibCheck": true

@@ -60,14 +60,36 @@ export interface Message<TContent = string> {
     content: TContent|null;
 
     /**
+     * @deprecated
      * Optional. A named function to call.
      */
     function_call?: FunctionCall;
 
     /**
-     * Optional. Name of the function that was called.
+     * Optional. Name of the participant.
      */
     name?: string;
+
+    /**
+     * Optional. Refusal message from the model.
+     */
+    refusal?: string;
+
+    /**
+     * Optional. Array of tools to call.
+     */
+    tool_calls?: ToolCall[];
+
+    /**
+     * Optional. ID of the tool that was called.
+     */
+    tool_call_id?: string;
+}
+
+export interface ToolCall {
+    id: string;
+    type: 'function';
+    function: FunctionCall;
 }
 
 export interface FunctionCall {

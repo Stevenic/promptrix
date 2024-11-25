@@ -1,8 +1,8 @@
 import { FunctionCall, Message, PromptFunctions, PromptMemory, RenderedPromptSection, Tokenizer } from "./types";
 import { PromptSectionBase } from "./PromptSectionBase";
-import { Utilities } from "./Utilities";
 
 /**
+ * @deprecated
  * An `assistant` message containing a function to call.
  * @remarks
  * The function call information is returned by the model so we use an "assistant" message to

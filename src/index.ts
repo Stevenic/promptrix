@@ -11,6 +11,8 @@ export * from "./PromptSectionBase";
 export * from "./SystemMessage";
 export * from "./TemplateSection";
 export * from "./TextSection";
+export * from "./ToolCallMessage";
+export * from "./ToolResponseMessage";
 export * from "./types";
 export * from "./UserMessage";
 export * from "./Utilities";
