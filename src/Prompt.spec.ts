@@ -16,7 +16,7 @@ describe("Prompt", () => {
                 new TextSection("Hello World", "user")
             ]);
             assert.equal(prompt.sections.length, 1);
-            assert.equal(prompt.tokens, -1);
+            assert.equal(prompt.size, -1);
             assert.equal(prompt.required, true);
             assert.equal(prompt.separator, "\n\n");
         });
@@ -26,7 +26,7 @@ describe("Prompt", () => {
                 new TextSection("Hello World", "user")
             ], 100, false, " ");
             assert.equal(prompt.sections.length, 1);
-            assert.equal(prompt.tokens, 100);
+            assert.equal(prompt.size, 100);
             assert.equal(prompt.required, false);
             assert.equal(prompt.separator, " ");
         });
